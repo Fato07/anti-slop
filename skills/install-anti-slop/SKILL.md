@@ -5,7 +5,7 @@ description: Install and configure the anti-slop Oxlint plugin in a local TypeSc
 
 # Install anti-slop
 
-Install the vendored plugin with evidence-first defaults. Preserve unrelated work and adapt to the repository's package manager and configuration style.
+Install the package with evidence-first defaults. Preserve unrelated work and adapt to the repository's package manager and configuration style.
 
 ## Procedure
 
@@ -15,28 +15,20 @@ Install the vendored plugin with evidence-first defaults. Preserve unrelated wor
    - Identify its package manager and Oxlint configuration.
    - Find any existing anti-slop files or rule keys. Do not overwrite them before reviewing the diff.
 
-2. Copy the bundled plugin from this skill:
-
-   ```bash
-   node <skill-directory>/scripts/install.mjs
-   ```
-
-   The default destination is `tools/oxlint/anti-slop/`. Pass another relative destination only when the repository already has a tooling convention. The script refuses to replace an existing copy; use `--force` only after backing it up and reviewing the difference.
-
-3. Install the versions tested by this fork:
+2. Install the versions tested by this fork as exact development dependencies:
 
    ```text
+   @fato07/oxlint-plugin-anti-slop 0.1.0
    oxlint 1.78.0
-   @oxlint/plugins 1.78.0
    ```
 
-   Install both as development dependencies with the repository's existing package manager. Do not silently upgrade them; test a newer matched pair in this fork before changing the pinned versions.
+   Use the repository's existing package manager. Do not silently upgrade them; test a newer matched pair in this fork before changing the pinned versions.
 
-4. Register the plugin and use the recommended rules in `oxlint.config.ts`:
+3. Register the plugin and use the recommended rules in `oxlint.config.ts`:
 
    ```ts
    import { defineConfig } from "oxlint";
-   import { recommendedRules } from "./tools/oxlint/anti-slop/index.ts";
+   import { recommendedRules } from "@fato07/oxlint-plugin-anti-slop";
 
    export default defineConfig({
      ignorePatterns: [
@@ -51,10 +43,9 @@ Install the vendored plugin with evidence-first defaults. Preserve unrelated wor
        ".pi/**",
        ".roo/**",
        ".windsurf/**",
-       "tools/oxlint/anti-slop/**",
      ],
      jsPlugins: [
-       { name: "anti-slop", specifier: "./tools/oxlint/anti-slop/index.ts" },
+       { name: "anti-slop", specifier: "@fato07/oxlint-plugin-anti-slop" },
      ],
      rules: {
        ...recommendedRules,
@@ -68,13 +59,13 @@ Install the vendored plugin with evidence-first defaults. Preserve unrelated wor
 
    Use `strictRules` instead of `recommendedRules` only when the user explicitly chooses the full opinionated policy. The strict profile allows `typeof` inside named type guards but still contains architecture- and vocabulary-specific rules.
 
-5. Run the repository's lint command and typecheck. For Vite+, run the full `vp check`. If owned source has findings, report them and change the source only when the user requested cleanup or migration.
+4. Run the repository's lint command and typecheck. For Vite+, run the full `vp check`. If owned source has findings, report them and change the source only when the user requested cleanup or migration.
 
-6. Resolve findings without laundering them:
+5. Resolve findings without laundering them:
    - Delete an unnecessary assertion or widening first.
    - Reuse an existing type, schema, parser, or repository module.
    - Prefer inference, `as const`, `satisfies`, standard-library, and native behavior.
    - Do not add a wrapper, interface, alias, dependency, or ceremonial `SAFETY:` comment only to make lint pass.
    - Use a narrow documented suppression for a genuine interop exception.
 
-7. Report the copied path, dependency versions, selected profile, configuration changes, checks run, and remaining findings.
+6. Report the dependency versions, selected profile, configuration changes, checks run, and remaining findings.

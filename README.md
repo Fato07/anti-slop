@@ -4,12 +4,10 @@ Evidence-first Oxlint policy for agent-written TypeScript and JavaScript.
 
 This fork keeps the original rules from [`dmmulroy/anti-slop`](https://github.com/dmmulroy/anti-slop), but changes the default: mechanically strong evidence rules are enabled first; architecture and vocabulary preferences remain explicit opt-ins.
 
-The project is vendored, not consumed as a fixed npm dependency. Copy it into a repository, review it, and make the policy yours.
-
 ## Two enforcement layers
 
-1. **Lint facts** — AST-local patterns such as chained assertions and widening a known value before asserting it back.
-2. **Review judgment** — Ponytail-inspired deletion, reuse, standard-library, native-platform, root-cause, and abstraction decisions that require repository context.
+1. **Lint facts:** AST-local patterns such as chained assertions and widening a known value before asserting it back.
+2. **Review judgment:** Ponytail-inspired deletion, reuse, standard-library, native-platform, root-cause, and abstraction decisions that require repository context.
 
 Do not turn judgment into a broad syntax ban. Do not satisfy lint by adding wrappers, aliases, interfaces, or comments that make the code larger without making it safer.
 
@@ -21,7 +19,7 @@ Install the evidence-first profile with the bundled agent skill:
 npx skills add Fato07/anti-slop --skill install-anti-slop
 ```
 
-Then ask your coding agent to install anti-slop in the current repository. The skill copies the plugin, installs the tested Oxlint versions, merges the recommended rules into the existing configuration, and validates the result.
+Then ask your coding agent to install anti-slop in the current repository. The skill installs the package and tested Oxlint version, merges the recommended rules into the existing configuration, and validates the result.
 
 Install the contextual simplicity review separately:
 
@@ -50,11 +48,15 @@ npx skills add Fato07/anti-slop --list
 
 ## Manual installation
 
-Copy `src/` into the target repository, for example at `tools/oxlint/anti-slop/`, and install the matched tested versions of `oxlint` and `@oxlint/plugins`.
+Install the plugin and its matched Oxlint version:
+
+```bash
+pnpm add --save-dev --save-exact @fato07/oxlint-plugin-anti-slop@0.1.0 oxlint@1.78.0
+```
 
 ```ts
 import { defineConfig } from "oxlint";
-import { recommendedRules } from "./tools/oxlint/anti-slop/index.ts";
+import { recommendedRules } from "@fato07/oxlint-plugin-anti-slop";
 
 export default defineConfig({
   ignorePatterns: [
@@ -69,10 +71,9 @@ export default defineConfig({
     ".pi/**",
     ".roo/**",
     ".windsurf/**",
-    "tools/oxlint/anti-slop/**",
   ],
   jsPlugins: [
-    { name: "anti-slop", specifier: "./tools/oxlint/anti-slop/index.ts" },
+    { name: "anti-slop", specifier: "@fato07/oxlint-plugin-anti-slop" },
   ],
   rules: {
     ...recommendedRules,
@@ -111,7 +112,7 @@ pnpm install
 pnpm check
 ```
 
-`src/` is canonical. After changing production source, run `pnpm sync:skill-assets`; CI verifies that the install skill's vendored copy remains identical.
+The package publishes compiled JavaScript and declarations. Oxlint loads the plugin through the package import specifier.
 
 ## License
 
