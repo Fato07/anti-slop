@@ -1,5 +1,5 @@
 {
-  "name": "@fato07/oxlint-plugin-anti-slop",
+  "name": "@sha256_nulled/oxlint-plugin-anti-slop",
   "version": "0.1.0",
   "description": "Opinionated Oxlint rules that reject low-evidence TypeScript and JavaScript patterns.",
   "type": "module",

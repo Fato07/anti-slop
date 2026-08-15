@@ -18,7 +18,7 @@ Install the package with evidence-first defaults. Preserve unrelated work and ad
 2. Install the versions tested by this fork as exact development dependencies:
 
    ```text
-   @fato07/oxlint-plugin-anti-slop 0.1.0
+   @sha256_nulled/oxlint-plugin-anti-slop 0.1.0
    oxlint 1.78.0
    ```
 
@@ -28,7 +28,7 @@ Install the package with evidence-first defaults. Preserve unrelated work and ad
 
    ```ts
    import { defineConfig } from "oxlint";
-   import { recommendedRules } from "@fato07/oxlint-plugin-anti-slop";
+   import { recommendedRules } from "@sha256_nulled/oxlint-plugin-anti-slop";
 
    export default defineConfig({
      ignorePatterns: [
@@ -45,7 +45,7 @@ Install the package with evidence-first defaults. Preserve unrelated work and ad
        ".windsurf/**",
      ],
      jsPlugins: [
-       { name: "anti-slop", specifier: "@fato07/oxlint-plugin-anti-slop" },
+       { name: "anti-slop", specifier: "@sha256_nulled/oxlint-plugin-anti-slop" },
      ],
      rules: {
        ...recommendedRules,

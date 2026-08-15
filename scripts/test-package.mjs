@@ -24,10 +24,10 @@ try {
   mkdirSync(join(consumer, "src"));
   writeFileSync(
     join(consumer, "oxlint.config.mjs"),
-    `import { recommendedRules } from "@fato07/oxlint-plugin-anti-slop";
+    `import { recommendedRules } from "@sha256_nulled/oxlint-plugin-anti-slop";
 export default {
   categories: { correctness: "off" },
-  jsPlugins: [{ name: "anti-slop", specifier: "@fato07/oxlint-plugin-anti-slop" }],
+  jsPlugins: [{ name: "anti-slop", specifier: "@sha256_nulled/oxlint-plugin-anti-slop" }],
   rules: recommendedRules,
 };
 `,
