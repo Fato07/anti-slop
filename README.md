@@ -51,12 +51,12 @@ npx skills add Fato07/anti-slop --list
 Install the plugin and its matched Oxlint version:
 
 ```bash
-pnpm add --save-dev --save-exact @fato07/oxlint-plugin-anti-slop@0.1.0 oxlint@1.78.0
+pnpm add --save-dev --save-exact @sha256_nulled/oxlint-plugin-anti-slop@0.1.0 oxlint@1.78.0
 ```
 
 ```ts
 import { defineConfig } from "oxlint";
-import { recommendedRules } from "@fato07/oxlint-plugin-anti-slop";
+import { recommendedRules } from "@sha256_nulled/oxlint-plugin-anti-slop";
 
 export default defineConfig({
   ignorePatterns: [
@@ -73,7 +73,7 @@ export default defineConfig({
     ".windsurf/**",
   ],
   jsPlugins: [
-    { name: "anti-slop", specifier: "@fato07/oxlint-plugin-anti-slop" },
+    { name: "anti-slop", specifier: "@sha256_nulled/oxlint-plugin-anti-slop" },
   ],
   rules: {
     ...recommendedRules,
