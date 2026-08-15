@@ -44,7 +44,7 @@ npx skills add Fato07/anti-slop --list
 | Severity | Rules |
 | --- | --- |
 | Error | `no-chained-type-assertions`, `no-widen-then-assert` |
-| Warning | `no-known-value-widening`, `no-object-parameters`, `no-unknown-type-aliases` |
+| Warning | `no-unknown-type-aliases` |
 
 `strictRules` enables all 15 rules as errors. It is intentionally opinionated and permits `typeof` only inside named type predicates and assertion functions.
 
@@ -87,12 +87,12 @@ Oxlint's JavaScript plugin interface is currently alpha. This fork pins `oxlint`
 | Rule | Recommended | Purpose |
 | --- | --- | --- |
 | `no-chained-type-assertions` | error | Reject nested assertions that fabricate evidence. |
-| `no-known-value-widening` | warn | Preserve known literal and object evidence. |
-| `no-object-parameters` | warn | Avoid the broad `object` input contract. |
 | `no-unknown-type-aliases` | warn | Keep `unknown` visible at the parsing seam. |
 | `no-widen-then-assert` | error | Reject known to broad to asserted-back local flows. |
 | `no-conditional-empty-object-spread` | strict | Prefer explicit property construction. |
+| `no-known-value-widening` | strict | Preserve known literal and object evidence. |
 | `no-module-mocking` | strict | Require tests to replace dependencies through real seams. |
+| `no-object-parameters` | strict | Avoid the broad `object` input contract. |
 | `no-reflect-apply` | strict | Prefer typed function calls. |
 | `no-reflect-get` | strict | Prefer typed property access. |
 | `no-runtime-typeof` | strict | Concentrate primitive checks in named type guards. |

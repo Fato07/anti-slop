@@ -4,8 +4,6 @@ import { recommendedRules, strictRules } from "./index.ts";
 
 assert.deepEqual(Object.keys(recommendedRules), [
 	"anti-slop/no-chained-type-assertions",
-	"anti-slop/no-known-value-widening",
-	"anti-slop/no-object-parameters",
 	"anti-slop/no-unknown-type-aliases",
 	"anti-slop/no-widen-then-assert",
 ]);

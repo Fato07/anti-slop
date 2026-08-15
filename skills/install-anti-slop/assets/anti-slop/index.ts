@@ -18,8 +18,6 @@ import { requireSafetyCommentForTypeAssertionRule } from "./rules/require-safety
 
 export const recommendedRules = {
 	"anti-slop/no-chained-type-assertions": "error",
-	"anti-slop/no-known-value-widening": "warn",
-	"anti-slop/no-object-parameters": "warn",
 	"anti-slop/no-unknown-type-aliases": "warn",
 	"anti-slop/no-widen-then-assert": "error",
 } as const;
