@@ -1,91 +1,80 @@
 ---
 name: install-anti-slop
-description: Install and configure the anti-slop Oxlint plugin in a local TypeScript or JavaScript repository. Use whenever a user asks to add anti-slop lint rules, copy the anti-slop plugin, configure opinionated Oxlint rules, or migrate an existing local anti-slop setup.
+description: Install and configure the anti-slop Oxlint plugin in a local TypeScript or JavaScript repository. Use when adding or updating anti-slop, adopting evidence-preserving lint rules, or migrating an existing vendored anti-slop setup.
 ---
 
 # Install anti-slop
 
-Install the bundled Oxlint plugin into the current repository and integrate it with the repository's existing lint setup. Preserve unrelated work and adapt to the project's package manager and configuration style.
+Install the vendored plugin with evidence-first defaults. Preserve unrelated work and adapt to the repository's package manager and configuration style.
 
 ## Procedure
 
-1. Inspect the repository before changing it:
+1. Inspect the repository:
    - Read its agent instructions.
    - Check `git status` and preserve unrelated changes.
-   - Identify the package manager from `packageManager` and lockfiles.
-   - Find Oxlint configuration (`oxlint.config.*`, `.oxlintrc*`, or a Vite+ config).
-   - Check whether anti-slop files or rules already exist. Do not overwrite them without reviewing the diff.
+   - Identify its package manager and Oxlint configuration.
+   - Find any existing anti-slop files or rule keys. Do not overwrite them before reviewing the diff.
 
-2. Copy the bundled plugin from this skill. Run from the target repository:
+2. Copy the bundled plugin from this skill:
 
    ```bash
    node <skill-directory>/scripts/install.mjs
    ```
 
-   This creates `tools/oxlint/anti-slop/`. Pass another relative destination as the first argument when the repository has an established tooling layout. The script refuses to replace an existing destination; only use `--force` after backing up and reviewing existing files.
+   The default destination is `tools/oxlint/anti-slop/`. Pass another relative destination only when the repository already has a tooling convention. The script refuses to replace an existing copy; use `--force` only after backing it up and reviewing the difference.
 
-3. Install current compatible dependencies rather than trusting versions remembered by the agent:
-   - Query `npm view oxlint version` and `npm view @oxlint/plugins version`.
-   - Install the same current version of both packages with the repository's package manager.
-   - `oxlint` is a development dependency. The copied source imports `@oxlint/plugins`, so install it as a development dependency for a local-only plugin.
-   - Do not replace the package manager or rewrite unrelated dependency ranges.
+3. Install the versions tested by this fork:
 
-4. Register the plugin, configure ignores, and enable all rules. For `oxlint.config.ts` or `.oxlintrc.json`, merge these fields with the existing configuration:
+   ```text
+   oxlint 1.78.0
+   @oxlint/plugins 1.78.0
+   ```
+
+   Install both as development dependencies with the repository's existing package manager. Do not silently upgrade them; test a newer matched pair in this fork before changing the pinned versions.
+
+4. Register the plugin and use the recommended rules in `oxlint.config.ts`:
 
    ```ts
-   ignorePatterns: [
-     ".agent/**",
-     ".agents/**",
-     ".claude/**",
-     ".codex/**",
-     ".continue/**",
-     ".cursor/**",
-     ".gemini/**",
-     ".opencode/**",
-     ".pi/**",
-     ".roo/**",
-     ".windsurf/**",
-     "tools/oxlint/anti-slop/**",
-   ],
-   jsPlugins: [
-     { name: "anti-slop", specifier: "./tools/oxlint/anti-slop/index.ts" },
-   ],
+   import { defineConfig } from "oxlint";
+   import { recommendedRules } from "./tools/oxlint/anti-slop/index.ts";
+
+   export default defineConfig({
+     ignorePatterns: [
+       ".agent/**",
+       ".agents/**",
+       ".claude/**",
+       ".codex/**",
+       ".continue/**",
+       ".cursor/**",
+       ".gemini/**",
+       ".opencode/**",
+       ".pi/**",
+       ".roo/**",
+       ".windsurf/**",
+       "tools/oxlint/anti-slop/**",
+     ],
+     jsPlugins: [
+       { name: "anti-slop", specifier: "./tools/oxlint/anti-slop/index.ts" },
+     ],
+     rules: {
+       ...recommendedRules,
+     },
+   });
    ```
 
-   Keep every existing ignore. Adjust the final pattern when the plugin was copied elsewhere. Inspect the repository for other project-local agent tooling directories and add them rather than linting installed skills, hooks, or generated agent configuration as application source. Do not broadly ignore all dot-directories, because some repositories keep owned source or checks in them.
+   Merge rather than replace existing ignores, plugins, rules, and overrides. If an existing `anti-slop/*` rule conflicts, preserve it and report the conflict. Add project-local agent tooling directories that actually exist; do not ignore every dot-directory.
 
-   For Vite+, add these fields to `lint.ignorePatterns` and `lint.jsPlugins`. Also merge the same patterns into `fmt.ignorePatterns` so `vp check` does not reformat installed agent assets or the vendored plugin. Merge existing entries instead of replacing them.
+   For Vite+, place the same plugin and rule entries under `lint`, and merge the ignore patterns into both `lint.ignorePatterns` and `fmt.ignorePatterns`.
 
-   Enable these rules at `"error"`:
+   Use `strictRules` instead of `recommendedRules` only when the user explicitly chooses the full opinionated policy. The strict profile allows `typeof` inside named type guards but still contains architecture- and vocabulary-specific rules.
 
-   ```json
-   {
-     "anti-slop/no-chained-type-assertions": "error",
-     "anti-slop/no-conditional-empty-object-spread": "error",
-     "anti-slop/no-known-value-widening": "error",
-     "anti-slop/no-module-mocking": "error",
-     "anti-slop/no-object-parameters": "error",
-     "anti-slop/no-reflect-apply": "error",
-     "anti-slop/no-reflect-get": "error",
-     "anti-slop/no-runtime-typeof": "error",
-     "anti-slop/no-shape-in-symbol-names": "error",
-     "anti-slop/no-unknown-parameters": "error",
-     "anti-slop/no-unknown-returns": "error",
-     "anti-slop/no-unknown-type-aliases": "error",
-     "anti-slop/no-unsafe-dictionary-type": "error",
-     "anti-slop/no-widen-then-assert": "error",
-     "anti-slop/require-safety-comment-for-type-assertion": "error"
-   }
-   ```
+5. Run the repository's lint command and typecheck. For Vite+, run the full `vp check`. If owned source has findings, report them and change the source only when the user requested cleanup or migration.
 
-5. Run the repository's lint command and typecheck. For Vite+, run the repository's full `vp check` command after adding both lint and format ignores. If findings appear in owned project source, report them and fix them only when the user asked for migration/cleanup. Do not suppress rules, weaken rule severity, add unsafe casts, or mechanically launder types to make lint pass.
+6. Resolve findings without laundering them:
+   - Delete an unnecessary assertion or widening first.
+   - Reuse an existing type, schema, parser, or repository module.
+   - Prefer inference, `as const`, `satisfies`, standard-library, and native behavior.
+   - Do not add a wrapper, interface, alias, dependency, or ceremonial `SAFETY:` comment only to make lint pass.
+   - Use a narrow documented suppression for a genuine interop exception.
 
-6. Review the final diff and clearly report:
-   - copied path,
-   - dependency versions installed,
-   - configuration changed,
-   - checks run and any remaining findings.
-
-## Migration guidance
-
-When replacing an older local copy, compare its rules and diagnostics before overwriting. Keep project-specific rules in their own plugin; anti-slop is intentionally generic. Prefer inference, `as const`, `satisfies`, named owner contracts, and boundary parsing when resolving findings.
+7. Report the copied path, dependency versions, selected profile, configuration changes, checks run, and remaining findings.

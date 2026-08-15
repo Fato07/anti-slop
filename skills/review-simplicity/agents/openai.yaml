@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review for Simplicity"
+  short_description: "Delete agent-made complexity with evidence"
+  default_prompt: "Use $review-simplicity to review this change for deletions, reuse, and the smallest correct fix."
