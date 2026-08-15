@@ -16,6 +16,32 @@ import { noUnsafeDictionaryTypeRule } from "./rules/no-unsafe-dictionary-type.ts
 import { noWidenThenAssertRule } from "./rules/no-widen-then-assert.ts";
 import { requireSafetyCommentForTypeAssertionRule } from "./rules/require-safety-comment-for-type-assertion.ts";
 
+export const recommendedRules = {
+	"anti-slop/no-chained-type-assertions": "error",
+	"anti-slop/no-known-value-widening": "warn",
+	"anti-slop/no-object-parameters": "warn",
+	"anti-slop/no-unknown-type-aliases": "warn",
+	"anti-slop/no-widen-then-assert": "error",
+} as const;
+
+export const strictRules = {
+	"anti-slop/no-chained-type-assertions": "error",
+	"anti-slop/no-conditional-empty-object-spread": "error",
+	"anti-slop/no-known-value-widening": "error",
+	"anti-slop/no-module-mocking": "error",
+	"anti-slop/no-object-parameters": "error",
+	"anti-slop/no-reflect-apply": "error",
+	"anti-slop/no-reflect-get": "error",
+	"anti-slop/no-runtime-typeof": ["error", { allowInTypeGuards: true }],
+	"anti-slop/no-shape-in-symbol-names": "error",
+	"anti-slop/no-unknown-parameters": "error",
+	"anti-slop/no-unknown-returns": "error",
+	"anti-slop/no-unknown-type-aliases": "error",
+	"anti-slop/no-unsafe-dictionary-type": "error",
+	"anti-slop/no-widen-then-assert": "error",
+	"anti-slop/require-safety-comment-for-type-assertion": "error",
+} as const;
+
 /** Generic Oxlint rules that reject low-evidence and low-signal implementation patterns. */
 const antiSlopPlugin = eslintCompatPlugin({
 	meta: { name: "anti-slop" },
