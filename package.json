@@ -1,23 +1,42 @@
 {
-  "name": "oxlint-plugin-anti-slop",
+  "name": "@fato07/oxlint-plugin-anti-slop",
   "version": "0.1.0",
-  "private": true,
   "description": "Opinionated Oxlint rules that reject low-evidence TypeScript and JavaScript patterns.",
   "type": "module",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
   "files": [
-    "src"
+    "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fato07/anti-slop.git"
+  },
+  "homepage": "https://github.com/Fato07/anti-slop#readme",
+  "bugs": "https://github.com/Fato07/anti-slop/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "check": "pnpm lint && pnpm test && pnpm typecheck && pnpm check:skill-assets",
+    "build": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\" && tsc -p tsconfig.build.json",
+    "check": "pnpm lint && pnpm test && pnpm typecheck && pnpm test:package",
     "lint": "oxlint src",
     "test": "tsx --test \"src/**/*.test.ts\"",
+    "test:package": "pnpm build && node scripts/test-package.mjs",
     "typecheck": "tsc --noEmit",
-    "sync:skill-assets": "node scripts/sync-skill-assets.mjs",
-    "check:skill-assets": "node scripts/sync-skill-assets.mjs --check"
+    "prepack": "pnpm build",
+    "prepublishOnly": "pnpm check"
   },
   "dependencies": {
     "@oxlint/plugins": "1.78.0"
+  },
+  "peerDependencies": {
+    "oxlint": "1.78.0"
   },
   "devDependencies": {
     "@types/node": "26.2.0",
